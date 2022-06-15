@@ -11,12 +11,12 @@ if (!fs.existsSync('dist')) {
 let builds = require('./config').getAllBuilds()
 
 // filter builds via command line arg
-if (process.argv[2]) {
+if (process.argv[2]) { // 若是配置文件带了参数，则处理参数，从配置表中过滤出当前参数的配置
   const filters = process.argv[2].split(',')
   builds = builds.filter(b => {
     return filters.some(f => b.output.file.indexOf(f) > -1 || b._name.indexOf(f) > -1)
   })
-} else {
+} else {  // 不带参数的build 默认是走web端构建
   // filter out weex builds by default
   builds = builds.filter(b => {
     return b.output.file.indexOf('weex') === -1

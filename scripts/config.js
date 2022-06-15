@@ -25,24 +25,26 @@ const weexFactoryPlugin = {
   }
 }
 
+// alias 返回一个对象，里面存放了 config.js的父级目录相邻的src下的六个核心目录的各入口文件的绝对路径信息
+// alias 就是提供了由 配置文件信息  -> src真实文件 的一个别名映射对象，可以快速获取对应真实文件如：src/web/entry-compiler.js 的绝对路径
 const aliases = require('./alias')
 const resolve = p => {
   const base = p.split('/')[0]
-  if (aliases[base]) {
+  if (aliases[base]) { // 若别名Map中有这个base，则返回Map中的value的绝对路径，并拼凑当前入参的后缀
     return path.resolve(aliases[base], p.slice(base.length + 1))
-  } else {
+  } else { // 若别名Map中没有这个base，则直接返回上级目录中的入参p，即可能从/dist、/src等目录寻找
     return path.resolve(__dirname, '../', p)
   }
 }
 
-const builds = {
+const builds = { // 可见config是向外暴露了关于：入口/出口等构建信息的一个对象、getAllBuilds方法用于获取所有配置的一个对象数组
   // Runtime only (CommonJS). Used by bundlers e.g. Webpack & Browserify
   'web-runtime-cjs-dev': {
     entry: resolve('web/entry-runtime.js'),
     dest: resolve('dist/vue.runtime.common.dev.js'),
-    format: 'cjs',
+    format: 'cjs',// 打包后文件格式，cjs：符合commonJs、es：符合ES Module、umd：符合UMD规范。
     env: 'development',
-    banner
+    banner // 打包后的文件的顶部注释
   },
   'web-runtime-cjs-prod': {
     entry: resolve('web/entry-runtime.js'),
